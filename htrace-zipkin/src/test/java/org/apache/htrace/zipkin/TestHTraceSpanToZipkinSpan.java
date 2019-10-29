@@ -17,18 +17,16 @@
 
 package org.apache.htrace.zipkin;
 
+import com.twitter.zipkin.gen.Annotation;
 import com.twitter.zipkin.gen.zipkinCoreConstants;
 
-import org.apache.htrace.core.HTraceConfiguration;
 import org.apache.htrace.core.MilliSpan;
-import org.apache.htrace.core.POJOSpanReceiver;
 import org.apache.htrace.core.Span;
 import org.apache.htrace.core.SpanId;
 import org.junit.Assert;
 import org.junit.Test;
 
 import java.io.IOException;
-import java.util.Collection;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -90,7 +88,7 @@ public class TestHTraceSpanToZipkinSpan {
     com.twitter.zipkin.gen.Span zs = new HTraceToZipkinConverter(12345, (short) -1).convert(ms);
 
     // Check to make sure that all times are in the proper order.
-    for (com.twitter.zipkin.gen.Annotation annotation : zs.getAnnotations()) {
+    for (Annotation annotation : zs.getAnnotations()) {
       // CS and SR should be before the annotation
       // the annotation should be in between annotationStart and annotationEnd times
       // SS and CR should be after annotationEnd and before endtime.
@@ -119,7 +117,7 @@ public class TestHTraceSpanToZipkinSpan {
                       begin(System.currentTimeMillis()).
                       build();
     com.twitter.zipkin.gen.Span zs = new HTraceToZipkinConverter(12345, (short) -1).convert(ms);
-    for (com.twitter.zipkin.gen.Annotation annotation:zs.getAnnotations()) {
+    for (Annotation annotation:zs.getAnnotations()) {
       assertEquals((short)60000, annotation.getHost().getPort());
     }
 
@@ -131,7 +129,7 @@ public class TestHTraceSpanToZipkinSpan {
                       begin(System.currentTimeMillis()).
                       build();
     zs = new HTraceToZipkinConverter(12345, (short) -1).convert(ms);
-    for (com.twitter.zipkin.gen.Annotation annotation:zs.getAnnotations()) {
+    for (Annotation annotation:zs.getAnnotations()) {
       assertEquals((short)60020, annotation.getHost().getPort());
     }
   }

@@ -175,7 +175,7 @@ language governing permissions and limitations under the License. -->
           <groupId>org.apache.htrace</groupId>
           <artifactId>htrace-core4</artifactId>
         </exclusion>
-      </exclusions> 
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>org.apache.hbase</groupId>
