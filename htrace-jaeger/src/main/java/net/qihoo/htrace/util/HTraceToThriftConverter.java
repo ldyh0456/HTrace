@@ -1,4 +1,4 @@
-package net.qihoo.htrace.transition;
+package net.qihoo.htrace.util;
 
 import jaeger.thrift.thriftjava.Span;
 import jaeger.thrift.thriftjava.SpanRef;
@@ -11,7 +11,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-public class HTraceToJaegerConverter {
+public class HTraceToThriftConverter {
     private static List<SpanRef> thriftReferences(long tracerid, long spanId) {
         List<SpanRef> thriftReferences = new ArrayList<SpanRef>();
         SpanRefType thriftRefType = SpanRefType.CHILD_OF;
@@ -19,7 +19,7 @@ public class HTraceToJaegerConverter {
         return thriftReferences;
     }
 
-    public static List<Tag> buildTags(Map<String, ?> tags) {
+    private static List<Tag> buildTags(Map<String, ?> tags) {
         List<Tag> thriftTags = new ArrayList<Tag>();
         if (tags != null) {
             for (Map.Entry<String, ?> entry : tags.entrySet()) {
@@ -55,7 +55,7 @@ public class HTraceToJaegerConverter {
      *
      */
     public Span convert(org.apache.htrace.core.Span hTraceSpan) {
-        String serverName = hTraceSpan.getTracerId().toLowerCase();
+        String serverName = hTraceSpan.getTracerId();
         long tracerid = hTraceSpan.getSpanId().getHigh();
         long traceridHigh = 0;
         long spanId = hTraceSpan.getSpanId().getLow();
@@ -63,7 +63,8 @@ public class HTraceToJaegerConverter {
         java.lang.String operationName = hTraceSpan.getDescription();
         int flags = (byte) 1;
         long startTime = hTraceSpan.getStartTimeMillis() * 1000;
-        long duration = hTraceSpan.getAccumulatedMillis();
+        long duration = hTraceSpan.getAccumulatedMillis() * 1000;
+
         List<SpanRef> references = Collections.emptyList();
         List<Tag> tags = buildTags(hTraceSpan.getKVAnnotations());
         if (hTraceSpan.getParents().length > 0) {
@@ -72,7 +73,6 @@ public class HTraceToJaegerConverter {
         }
         Span thriftSpan = new Span(tracerid, traceridHigh, spanId, parentSpanId, operationName, flags, startTime, duration).setReferences(references).setTags(tags).setLogs(null);
         thriftSpan.setServerName(serverName);
-
         return thriftSpan;
     }
 }
