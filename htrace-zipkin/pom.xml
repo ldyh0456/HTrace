@@ -157,7 +157,7 @@ language governing permissions and limitations under the License. -->
     <dependency>
       <groupId>org.apache.thrift</groupId>
       <artifactId>libthrift</artifactId>
-      <version>0.9.0</version>
+      <version>0.14.0</version>
     </dependency>
 
     <dependency>
